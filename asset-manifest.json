@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/orchidenver/marvel.git/static/css/main.07b67775.chunk.css",
+    "main.js": "/orchidenver/marvel.git/static/js/main.73a9e6dc.chunk.js",
+    "main.js.map": "/orchidenver/marvel.git/static/js/main.73a9e6dc.chunk.js.map",
+    "runtime-main.js": "/orchidenver/marvel.git/static/js/runtime-main.5d76491b.js",
+    "runtime-main.js.map": "/orchidenver/marvel.git/static/js/runtime-main.5d76491b.js.map",
+    "static/js/2.083d0118.chunk.js": "/orchidenver/marvel.git/static/js/2.083d0118.chunk.js",
+    "static/js/2.083d0118.chunk.js.map": "/orchidenver/marvel.git/static/js/2.083d0118.chunk.js.map",
+    "index.html": "/orchidenver/marvel.git/index.html",
+    "static/css/main.07b67775.chunk.css.map": "/orchidenver/marvel.git/static/css/main.07b67775.chunk.css.map",
+    "static/js/2.083d0118.chunk.js.LICENSE.txt": "/orchidenver/marvel.git/static/js/2.083d0118.chunk.js.LICENSE.txt",
+    "static/media/error.42292aa1.gif": "/orchidenver/marvel.git/static/media/error.42292aa1.gif",
+    "static/media/mjolnir.61f31e18.png": "/orchidenver/marvel.git/static/media/mjolnir.61f31e18.png",
+    "static/media/vision.067d4ae1.png": "/orchidenver/marvel.git/static/media/vision.067d4ae1.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.5d76491b.js",
+    "static/js/2.083d0118.chunk.js",
+    "static/css/main.07b67775.chunk.css",
+    "static/js/main.73a9e6dc.chunk.js"
+  ]
+}

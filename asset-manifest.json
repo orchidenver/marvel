@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/github.io/static/css/main.07b67775.chunk.css",
+    "main.js": "/github.io/static/js/main.73a9e6dc.chunk.js",
+    "main.js.map": "/github.io/static/js/main.73a9e6dc.chunk.js.map",
+    "runtime-main.js": "/github.io/static/js/runtime-main.10af7d19.js",
+    "runtime-main.js.map": "/github.io/static/js/runtime-main.10af7d19.js.map",
+    "static/js/2.083d0118.chunk.js": "/github.io/static/js/2.083d0118.chunk.js",
+    "static/js/2.083d0118.chunk.js.map": "/github.io/static/js/2.083d0118.chunk.js.map",
+    "index.html": "/github.io/index.html",
+    "static/css/main.07b67775.chunk.css.map": "/github.io/static/css/main.07b67775.chunk.css.map",
+    "static/js/2.083d0118.chunk.js.LICENSE.txt": "/github.io/static/js/2.083d0118.chunk.js.LICENSE.txt",
+    "static/media/error.42292aa1.gif": "/github.io/static/media/error.42292aa1.gif",
+    "static/media/mjolnir.61f31e18.png": "/github.io/static/media/mjolnir.61f31e18.png",
+    "static/media/vision.067d4ae1.png": "/github.io/static/media/vision.067d4ae1.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.10af7d19.js",
+    "static/js/2.083d0118.chunk.js",
+    "static/css/main.07b67775.chunk.css",
+    "static/js/main.73a9e6dc.chunk.js"
+  ]
+}

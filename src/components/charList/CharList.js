@@ -1,61 +1,48 @@
-import { Component } from 'react/cjs/react.production.min';
+import { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import MarvelService from '../../services/MarvelService';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
+import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 
 import './charList.scss';
 
-class CharList extends Component {
-    state = {
-        charList: [],
-        loading: true,
-        error: false,
-        newItemsLoading: false,
-        offset: 210,
-        charEnded: false
-    }
-    itemRefs = [];
+const CharList = (props) => {
 
-    marvelService = new MarvelService()
+    const [charList, setCharList] = useState([]);
+    const [newItemsLoading, setNewItemsLoading] = useState(false);
+    const [offset, setOffset] = useState(210);
+    const [charEnded, setCharEnded] = useState(false);
 
-    componentDidMount() {
-        this.initialLoadChars();
-    }
+    const { loading, error, getAllCharacters } = useMarvelService();
 
-    initialLoadChars = (offset) => {
-        this.onCharListLoading();
-        this.marvelService.getAllCharacters(offset).then(this.onCharListLoaded).catch(this.onError);
-    }
+    useEffect(() => {
+        // Якщо initial передаємо тру, то це первинне завантаження
+        // Якщо повторне завантаження - фолс (завантажуємо нових персонажів)
+        initialLoadChars(offset, true);
+    }, []);
 
-    // Змінюємо інтерфейс при завантаженні даних
-    onCharListLoading = () => {
-        this.setState({ newItemsLoading: true });
+    const initialLoadChars = (offset, initial) => {
+        // Змінюємо інтерфейс при завантаженні даних
+        initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
+        getAllCharacters(offset).then(onCharListLoaded);
     }
 
     // Додаємо елементи при пагінації у стейт charList
-    onCharListLoaded = (newCharList) => {
+    const onCharListLoaded = (newCharList) => {
         let isEnded = false;
-        if (newCharList.length < 9) isEnded = true
+        if (newCharList.length < 9) isEnded = true;
 
-        this.setState(({ charList, offset }) => ({
-            charList: [...charList, ...newCharList],
-            loading: false,
-            newItemsLoading: false,
-            offset: offset + 9, // дозавантажуємо 9 елементів
-            charEnded: isEnded, // для блокування завантаження, коли немає чого вантажити
-        }));
+        setCharList(charList => [...charList, ...newCharList]);
+        setNewItemsLoading(newItemsLoading => false);
+        setOffset(offset => offset + 9); // дозавантажуємо 9 елементів
+        setCharEnded(charEnded => isEnded); // для блокування завантаження, коли немає чого вантажити
     }
 
-    onError = () => {
-        this.setState({ loading: false, error: true });
-    }
+    const itemRefs = useRef([]);
 
-    setRef = (ref) => {
-        this.itemRefs.push(ref);
-    }
-
-    focusOnItem = (id) => {
+    const focusOnItem = (id) => {
         // Я реализовал вариант чуть сложнее, и с классом и с фокусом
         // Но в теории можно оставить только фокус, и его в стилях использовать вместо класса
         // На самом деле, решение с css-классом можно сделать, вынеся персонажа
@@ -63,12 +50,12 @@ class CharList extends Component {
         // и не факт, что мы выиграем по оптимизации за счет бОльшего кол-ва элементов
 
         // По возможности, не злоупотребляйте рефами, только в крайних случаях
-        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
-        this.itemRefs[id].classList.add('char__item_selected');
-        this.itemRefs[id].focus();
+        itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
+        itemRefs.current[id].classList.add('char__item_selected');
+        itemRefs.current[id].focus();
     }
 
-    renderItems = (array) => {
+    function renderItems(array) {
 
         const items = array.map((item, i) => {
             const { id, thumbnail, name } = item;
@@ -77,56 +64,60 @@ class CharList extends Component {
             if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') imgStyle = { 'objectFit': 'unset' };
             // https://developer.mozilla.org/ru/docs/Web/HTML/Global_attributes/tabindex
             return (
-                <li
-                    key={id}
-                    tabIndex={0}
-                    ref={this.setRef}
-                    onClick={() => {
-                        this.props.onSelectedChar(id);
-                        this.focusOnItem(i);
-                    }}
-                    onKeyPress={(e) => {
-                        if (e.key === ' ' || e.key === "Enter") {
-                            this.props.onSelectedChar(id);
-                            this.focusOnItem(i);
-                        }
-                    }}
-                    className="char__item">
-                    <img src={thumbnail} alt={name} style={imgStyle} />
-                    <div className="char__name">{name}</div>
-                </li>
+                <CSSTransition key={item.id} timeout={500} classNames="char__item">
+                    <li
+                        key={id}
+                        tabIndex={0}
+                        ref={el => itemRefs.current[i] = el} // додаємо до конкретного ДОМ елемента реф
+                        onClick={() => {
+                            props.onSelectedChar(id);
+                            focusOnItem(i);
+                        }}
+                        onKeyPress={(e) => {
+                            if (e.key === ' ' || e.key === "Enter") {
+                                props.onSelectedChar(id);
+                                focusOnItem(i);
+                            }
+                        }}
+                        className="char__item">
+                        <img src={thumbnail} alt={name} style={imgStyle} />
+                        <div className="char__name">{name}</div>
+                    </li>
+                </CSSTransition>
             )
         })
 
         return (
+
             <ul className="char__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }
 
-    render() {
-        const { charList, loading, error, newItemsLoading, offset, charEnded } = this.state;
-        const errorMessage = error ? <ErrorMessage /> : null;
-        const spinner = loading ? <Spinner /> : null;
-        const content = !(loading || error) ? this.renderItems(charList) : null;
+    const errorMessage = error ? <ErrorMessage /> : null;
+    // Є завантаження і при цьому зе не завантаження нових компонентів
+    // За таких умов спінер буде вантажитися тільки у перший раз, коли ми завантажуємо персонажів
+    // За умов додаткового завантаження персонажів спінеру не буде
+    const spinner = loading && !newItemsLoading ? <Spinner /> : null;
 
-        // style={{ 'display': charEnded ? 'none' : 'block' }} - якщо білше немає чого вантажити
-        return (
-            <div className="char__list">
-                {spinner}
-                {errorMessage}
-                {content}
-                <button
-                    disabled={newItemsLoading}
-                    onClick={() => this.initialLoadChars(offset)}
-                    style={{ 'display': charEnded ? 'none' : 'block' }}
-                    className="button button__main button__long">
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
-    }
+    // style={{ 'display': charEnded ? 'none' : 'block' }} - якщо білше немає чого вантажити
+    return (
+        <div className="char__list">
+            {spinner}
+            {errorMessage}
+            {renderItems(charList)}
+            <button
+                disabled={newItemsLoading}
+                onClick={() => initialLoadChars(offset)}
+                style={{ 'display': charEnded ? 'none' : 'block' }}
+                className="button button__main button__long">
+                <div className="inner">load more</div>
+            </button>
+        </div>
+    )
 }
 
 CharList.propTypes = {

@@ -31,7 +31,6 @@ function useMarvelService() {
 
     const getCharByName = async (name) => {
         const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
-        console.log(res);
         return _transformCharOnSearchDemand(res.data.results[0]);
     }
 

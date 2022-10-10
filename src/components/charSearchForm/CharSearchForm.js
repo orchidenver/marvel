@@ -41,7 +41,8 @@ function CharSearchForm() {
                 validationSchema={Yup.object({
                     charName: Yup.string().required('Ruquired field')
                 })}
-                onSubmit={({ charName }) => updateChar(charName)}>
+                onSubmit={({ charName }) => updateChar(charName)}
+                validateOnChange={false}>
                 <Form>
                     <label className="char__search-label" htmlFor="charName">Or find a character by name:</label>
                     <div className="char__search-wrapper">
@@ -61,8 +62,8 @@ function CharSearchForm() {
                     <FormikErrorMessage className='char__search-error' name="charName" component="div" />
                 </Form>
             </Formik>
-            {errorMessage}
             {results}
+            {errorMessage}
         </div >
     )
 }
